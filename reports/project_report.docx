@@ -1,0 +1,12 @@
+# Sales Forecasting Project Report
+
+## Project Overview
+This project aims to develop a machine learning model for sales forecasting with a web-based interface.
+
+## Project Structure
+- Dataset storage and preprocessing
+- Model training and evaluation
+- FastAPI backend for predictions
+- React frontend for user interface
+
+## TODO: Add project details here
