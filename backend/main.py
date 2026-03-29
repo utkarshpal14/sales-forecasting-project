@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
+
 import numpy as np
 
 app = FastAPI(title="Sales Forecasting API")
