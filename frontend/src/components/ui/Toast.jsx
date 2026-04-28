@@ -1,0 +1,1 @@
+import { toast } from 'react-hot-toast';/** @param {{}} props */export const Toast={success:(m)=>toast.success(m),error:(m)=>toast.error(m)};export default Toast;

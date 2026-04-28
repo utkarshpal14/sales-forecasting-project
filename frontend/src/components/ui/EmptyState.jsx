@@ -1,0 +1,1 @@
+/** @param {{ message:string }} props */export const EmptyState=({message})=><div className='glass rounded-2xl p-8 text-center text-muted'>{message}</div>;export default EmptyState;

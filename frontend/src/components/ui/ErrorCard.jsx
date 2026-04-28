@@ -1,0 +1,1 @@
+/** @param {{ message:string }} props */export const ErrorCard=({message})=><div className='rounded-2xl border border-danger/40 bg-danger/10 p-4 text-danger'>{message}</div>;export default ErrorCard;

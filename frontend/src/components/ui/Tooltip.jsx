@@ -1,0 +1,1 @@
+/** @param {{ text:string, children:import('react').ReactNode }} props */export const Tooltip=({text,children})=><span className='group relative inline-flex'>{children}<span className='pointer-events-none absolute -top-8 left-1/2 hidden -translate-x-1/2 rounded bg-surface px-2 py-1 text-xs text-textc group-hover:block'>{text}</span></span>;export default Tooltip;

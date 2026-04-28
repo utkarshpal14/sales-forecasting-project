@@ -1,0 +1,1 @@
+export const COLORS={bg:'var(--color-bg)',surface:'var(--color-surface)',border:'var(--color-border)',primary:'var(--color-primary)',secondary:'var(--color-secondary)',success:'var(--color-success)',warning:'var(--color-warning)',danger:'var(--color-danger)',text:'var(--color-text)',muted:'var(--color-muted)'};export default COLORS;

@@ -1,0 +1,1 @@
+export const ROUTES={dashboard:'/',predict:'/predict',optimize:'/optimize',insights:'/insights',modelInfo:'/model-info'};export default ROUTES;

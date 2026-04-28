@@ -8,12 +8,27 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# Minimal input model - only 4 features for simplicity
+# Minimal input model - only 5 features for simplicity
 class PredictionInput(BaseModel):
     Item_MRP: float          # Price - most important
     Item_Type: int           # Product category
     Outlet_Type: int         # Store type
     Outlet_Age: int          # Store age
+    Outlet_Location_Type: int  # Location type (0=Rural, 1=Semi-Urban, 2=Urban)
+
+# Input model for best-product endpoint
+class BestProductInput(BaseModel):
+    Item_MRP: float
+    Outlet_Type: int
+    Outlet_Age: int
+    Outlet_Location_Type: int
+
+# Input model for best-store endpoint  
+class BestStoreInput(BaseModel):
+    Item_MRP: float
+    Item_Type: int
+    Outlet_Age: int
+    Outlet_Location_Type: int
 
 def engineer_features(data):
     """Create all features from minimal input"""
@@ -26,7 +41,7 @@ def engineer_features(data):
         "Item_Visibility": 0.05,
         "Outlet_Identifier": 1,
         "Outlet_Size": 2,
-        "Outlet_Location_Type": 1,
+        "Outlet_Type": 1,  # Default to Supermarket Type 1
     }
     for col, default_val in default_values.items():
         if col not in df.columns:
@@ -153,6 +168,7 @@ def predict_batch(input_data: List[PredictionInput]):
 
 @app.post("/optimal-price")
 def optimal_price(input_data: PredictionInput):
+    print(f"DEBUG - optimal_price endpoint called with: {input_data}")
     try:
         if model is None:
             raise HTTPException(status_code=500, detail="Model not loaded")
@@ -258,7 +274,7 @@ def insight(input_data: PredictionInput):
         raise HTTPException(status_code=500, detail=f"Insight error: {str(e)}")
 
 @app.post("/best-product")
-def best_product(input_data: PredictionInput):
+def best_product(input_data: BestProductInput):
     try:
         if model is None:
             raise HTTPException(status_code=500, detail="Model not loaded")
@@ -277,8 +293,16 @@ def best_product(input_data: PredictionInput):
             
             pred = model.predict(df)[0]
             results.append((product, pred))
+            
+            # Debug: Print first few products to see pattern
+            if product < 3:
+                print(f"DEBUG - Product {product}: Input={data_copy}, Prediction={pred}")
 
         best = max(results, key=lambda x: x[1])
+        
+        # Debug: Print all results
+        print(f"DEBUG - All results: {results}")
+        print(f"DEBUG - Best product: {best[0]} with sales: {best[1]}")
 
         return {
             "best_product": best[0],
@@ -291,8 +315,13 @@ def best_product(input_data: PredictionInput):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Best product error: {str(e)}")
 
+@app.get("/test")
+def test_endpoint():
+    return {"message": "Server is working", "status": "success"}
+
 @app.post("/best-store")
-def best_store(input_data: PredictionInput):
+def best_store(input_data: BestStoreInput):
+    print(f"DEBUG - best_store endpoint called with: {input_data}")
     try:
         if model is None:
             raise HTTPException(status_code=500, detail="Model not loaded")
@@ -301,8 +330,12 @@ def best_store(input_data: PredictionInput):
         store_list = list(range(10))  # Assuming 10 store types
         results = []
 
+        print(f"DEBUG - Starting best_store with input: {input_data}")
+        
         for store in store_list:
+            print(f"DEBUG - Testing store {store}")
             data_copy = input_data.model_dump()
+            # Add Outlet_Identifier to the data before engineering
             data_copy["Outlet_Identifier"] = store
             
             engineered_data = engineer_features(data_copy)
@@ -311,8 +344,13 @@ def best_store(input_data: PredictionInput):
             
             pred = model.predict(df)[0]
             results.append((store, pred))
+            print(f"DEBUG - Store {store} prediction: {pred}")
 
         best = max(results, key=lambda x: x[1])
+        
+        # Debug: Print all results
+        print(f"DEBUG - Best Store All results: {results}")
+        print(f"DEBUG - Best store: {best[0]} with sales: {best[1]}")
 
         return {
             "best_store": best[0],
@@ -323,6 +361,10 @@ def best_store(input_data: PredictionInput):
     except HTTPException:
         raise
     except Exception as e:
+        print(f"ERROR in best_store: {str(e)}")
+        print(f"ERROR type: {type(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Best store error: {str(e)}")
 
 if __name__ == "__main__":
