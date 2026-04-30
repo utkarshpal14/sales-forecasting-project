@@ -31,7 +31,7 @@ class BestStoreInput(BaseModel):
     Outlet_Location_Type: int
 
 def engineer_features(data):
-    """Create all features from minimal input"""
+    """Create all 36 features from minimal input"""
     df = pd.DataFrame([data])
     
     # Add reasonable defaults for missing features
@@ -47,26 +47,54 @@ def engineer_features(data):
         if col not in df.columns:
             df[col] = default_val
     
-    # Create engineered features
-    df['MRP_Visibility'] = df['Item_MRP'] * df['Item_Visibility']
+    # Polynomial features
+    df['MRP_Squared'] = df['Item_MRP'] ** 2
+    df['Weight_Squared'] = df['Item_Weight'] ** 2
+    df['Outlet_Age_Squared'] = df['Outlet_Age'] ** 2
+    
+    # Z-score features (use fixed mean/std for inference)
+    df['Item_MRP_zscore'] = (df['Item_MRP'] - 150.0) / 50.0
+    
+    # Interaction features
     df['MRP_Weight'] = df['Item_MRP'] * df['Item_Weight']
     df['Outlet_Age_Type'] = df['Outlet_Age'] * df['Outlet_Type']
     df['Item_Type_Visibility'] = df['Item_Type'] * df['Item_Visibility']
-    df['MRP_Squared'] = df['Item_MRP'] ** 2
-    df['Weight_Squared'] = df['Item_Weight'] ** 2
+    df['MRP_Visibility'] = df['Item_MRP'] * df['Item_Visibility']
+    df['MRP_Outlet_Type'] = df['Item_MRP'] * df['Outlet_Type']
+    df['MRP_Outlet_Age'] = df['Item_MRP'] * df['Outlet_Age']
+    
+    # Outlet aggregated features (use defaults for inference)
+    df['Outlet_MRP_Avg'] = 150.0
+    df['Outlet_Size_Type'] = df['Outlet_Size'] * df['Outlet_Type']
+    df['Outlet_Loc_Type'] = df['Outlet_Location_Type'] * df['Outlet_Type']
+    
+    # Ratio features
     df['MRP_per_Weight'] = df['Item_MRP'] / (df['Item_Weight'] + 1e-6)
     df['Visibility_per_Age'] = df['Item_Visibility'] / (df['Outlet_Age'] + 1e-6)
+    df['Visibility_vs_Type_Avg'] = df['Item_Visibility'] / 0.05  # Default visibility avg
+    df['Weight_vs_Type_Avg'] = df['Item_Weight'] / 12.0  # Default weight avg
     
-    # Add the missing features
-    # Use fixed bins so inference is stable even for single-row inputs.
+    # Ranking features (use defaults)
+    df['MRP_Category_Rank'] = 2.0
+    
+    # Binning
     df['MRP_Bins'] = pd.cut(
         df['Item_MRP'],
-        bins=[0, 100, 200, 300, 400, float("inf")],
+        bins=[0, 100, 200, 300, 400, 500],
         labels=False,
         include_lowest=True
-    ).fillna(2)
-    df['Outlet_Performance_Score'] = 1500.0  # Default performance score
-    df['Price_vs_Category_Avg'] = df['Item_MRP'] / 150.0  # Default category avg
+    ).fillna(2).astype(int)
+    
+    # Performance features (use defaults)
+    df['Outlet_Performance_Score'] = 1500.0
+    df['Price_vs_Category_Avg'] = df['Item_MRP'] / 150.0
+    
+    # Target encoded features (use defaults for inference)
+    df['Outlet_Type_te'] = 1500.0
+    df['Outlet_Identifier_te'] = 1500.0
+    df['Item_Type_te'] = 1500.0
+    df['Outlet_Location_Type_te'] = 1500.0
+    df['Outlet_Size_te'] = 1500.0
     
     return df.iloc[0].to_dict()
 
