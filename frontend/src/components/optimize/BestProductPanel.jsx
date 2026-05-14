@@ -28,15 +28,14 @@ export const BestProductPanel = () => {
       Item_MRP: Number(formData.Item_MRP),
       Outlet_Type: Number(formData.Outlet_Type) || 0,
       Outlet_Age: Number(formData.Outlet_Age),
-      Outlet_Location_Type: Number(formData.Outlet_Location_Type) || 1
+      Outlet_Location_Type: Number(formData.Outlet_Location_Type) || 1,
     };
-    console.log('BestProduct payload:', payload);
     getBestProduct(payload);
   };
 
   return (
-    <div className='grid gap-4 lg:grid-cols-2'>
-      <div className='glass space-y-4 rounded-2xl p-4 sm:p-5'>
+    <div className='grid gap-4 lg:grid-cols-2 lg:items-start'>
+      <div className='glass min-w-0 space-y-4 rounded-2xl p-4 sm:p-5'>
         <InputField label='Item MRP' type='number' step='0.01' placeholder='Enter product price' {...register('Item_MRP', validationRules.Item_MRP)} error={errors.Item_MRP?.message} />
         <SelectField label='Outlet Type' options={OUTLET_TYPES} {...register('Outlet_Type', validationRules.Outlet_Type)} error={errors.Outlet_Type?.message} />
         <SliderField label='Outlet Age' value={watch('Outlet_Age')} onChange={(e) => setValue('Outlet_Age', Number(e.target.value))} />
@@ -45,7 +44,7 @@ export const BestProductPanel = () => {
           Find Best Product
         </Button>
       </div>
-      <div>
+      <div className='min-w-0'>
         {error && <ErrorCard message={error} />}
         {!data && <EmptyState message='Run optimization first' />}
         {data && (
@@ -60,12 +59,20 @@ export const BestProductPanel = () => {
             >
               <div className='flex flex-col gap-2 rounded-xl bg-secondary/20 p-4 text-secondary glow-secondary h-full'>
                 <Trophy className='h-5 w-5' />
-                <p className='text-sm'>Winner Product</p>
-                <p className='font-mono text-xl'>{data.best_product}</p>
-                <p className='text-sm'>{Number(data.predicted_sales || 0).toFixed(2)}</p>
+                <p className='text-sm'>Winner product</p>
+                <p className='font-syne text-base font-semibold leading-snug text-textc'>{data.best_product_name ?? '—'}</p>
+                <p className='text-xs text-muted'>Predicted sales (units)</p>
+                <p className='font-mono text-xl font-bold'>{Number(data.predicted_sales || 0).toFixed(2)}</p>
               </div>
             </Tilt>
-            <ProductBarChart data={(data.all_results || []).map((r) => ({ product: r.product, sales: r.predicted_sales ?? r.sales }))} />
+            <ProductBarChart
+              data={(data.all_results || []).map((r) => ({
+                product: r.product,
+                product_name: r.product_name,
+                product_label: r.product_name ?? r.product_label ?? String(r.product),
+                sales: r.predicted_sales ?? r.sales,
+              }))}
+            />
           </>
         )}
       </div>

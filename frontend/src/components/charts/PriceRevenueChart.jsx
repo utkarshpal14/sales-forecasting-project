@@ -7,10 +7,10 @@ import ChartTooltip from './ChartTooltip';
 export const PriceRevenueChart = ({ data = mockData.priceRevenue }) => {
   const peak = data.reduce((a, b) => (a.revenue > b.revenue ? a : b), data[0]);
   return (
-    <GlassCard>
+    <GlassCard className='w-full min-w-0'>
       <h3 className='mb-3 font-syne text-base font-semibold'>Revenue vs Price</h3>
-      <div className='h-[220px] md:h-80'>
-        <ResponsiveContainer>
+      <div className='h-[220px] w-full min-w-0 md:h-80'>
+        <ResponsiveContainer width='100%' height='100%' minWidth={0}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id='revGrad' x1='0' x2='0' y1='0' y2='1'>

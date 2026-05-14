@@ -28,15 +28,14 @@ export const BestStorePanel = () => {
       Item_MRP: Number(formData.Item_MRP),
       Item_Type: Number(formData.Item_Type) || 0,
       Outlet_Age: Number(formData.Outlet_Age),
-      Outlet_Location_Type: Number(formData.Outlet_Location_Type) || 1
+      Outlet_Location_Type: Number(formData.Outlet_Location_Type) || 1,
     };
-    console.log('BestStore payload:', payload);
     getBestStore(payload);
   };
 
   return (
-    <div className='grid gap-4 lg:grid-cols-2'>
-      <div className='glass space-y-4 rounded-2xl p-4 sm:p-5'>
+    <div className='grid gap-4 lg:grid-cols-2 lg:items-start'>
+      <div className='glass min-w-0 space-y-4 rounded-2xl p-4 sm:p-5'>
         <InputField label='Item MRP' type='number' step='0.01' placeholder='Enter product price' {...register('Item_MRP', validationRules.Item_MRP)} error={errors.Item_MRP?.message} />
         <SelectField label='Item Type' options={ITEM_TYPES} {...register('Item_Type', validationRules.Item_Type)} error={errors.Item_Type?.message} />
         <SliderField label='Outlet Age' value={watch('Outlet_Age')} onChange={(e) => setValue('Outlet_Age', Number(e.target.value))} />
@@ -45,7 +44,7 @@ export const BestStorePanel = () => {
           Find Best Store
         </Button>
       </div>
-      <div>
+      <div className='min-w-0'>
         {error && <ErrorCard message={error} />}
         {!data && <EmptyState message='Run optimization first' />}
         {data && (
@@ -60,12 +59,20 @@ export const BestStorePanel = () => {
             >
               <div className='flex flex-col gap-2 rounded-xl bg-primary/20 p-4 text-primary glow-primary h-full'>
                 <Star className='h-5 w-5' />
-                <p className='text-sm'>Winner Store</p>
-                <p className='font-mono text-xl'>{data.best_store}</p>
-                <p className='text-sm'>{Number(data.predicted_sales || 0).toFixed(2)}</p>
+                <p className='text-sm'>Best outlet (dataset ID)</p>
+                <p className='font-syne text-base font-semibold leading-snug text-textc'>{data.best_store_name ?? '—'}</p>
+                <p className='text-xs text-muted'>Predicted sales (units)</p>
+                <p className='font-mono text-xl font-bold'>{Number(data.predicted_sales || 0).toFixed(2)}</p>
               </div>
             </Tilt>
-            <StoreBarChart data={(data.all_results || []).map((r) => ({ store: r.store, sales: r.predicted_sales ?? r.sales }))} />
+            <StoreBarChart
+              data={(data.all_results || []).map((r) => ({
+                store: r.store,
+                store_name: r.store_name,
+                store_label: r.store_name ?? r.store_label ?? String(r.store),
+                sales: r.predicted_sales ?? r.sales,
+              }))}
+            />
           </>
         )}
       </div>

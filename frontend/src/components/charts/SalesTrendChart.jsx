@@ -8,13 +8,13 @@ export const SalesTrendChart = ({ data = mockData.salesTrend }) => {
   const avg = data.reduce((acc, row) => acc + Number(row.sales || 0), 0) / Math.max(data.length, 1);
 
   return (
-    <GlassCard className='p-4 sm:p-5'>
+    <GlassCard className='w-full min-w-0 p-4 sm:p-5'>
       <div className='mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
         <h3 className='font-syne text-base font-semibold'>12-Month Sales Trend</h3>
         <span className='w-fit rounded-full bg-surface px-2 py-1 text-xs text-muted'>Last 12 Months</span>
       </div>
-      <div className='h-[220px] md:h-80'>
-        <ResponsiveContainer>
+      <div className='h-[220px] w-full min-w-0 md:h-80'>
+        <ResponsiveContainer width='100%' height='100%' minWidth={0}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id='salesGrad' x1='0' x2='0' y1='0' y2='1'>

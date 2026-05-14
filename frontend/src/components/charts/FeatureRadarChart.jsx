@@ -11,10 +11,10 @@ const data = [
 
 /** @param {{}} props */
 export const FeatureRadarChart = () => (
-  <GlassCard className='p-4 sm:p-5'>
+  <GlassCard className='w-full min-w-0 p-4 sm:p-5'>
     <h3 className='mb-3 font-syne text-base font-semibold'>Feature Group Importance</h3>
-    <div className='h-[240px] md:h-80'>
-      <ResponsiveContainer>
+    <div className='h-[240px] w-full min-w-0 md:h-80'>
+      <ResponsiveContainer width='100%' height='100%' minWidth={0}>
         <RadarChart data={data}>
           <PolarGrid stroke='var(--color-border)' />
           <PolarAngleAxis dataKey='feature' tick={{ fill: 'var(--color-muted)', fontSize: 11, fontFamily: 'DM Sans' }} />
