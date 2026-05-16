@@ -1,6 +1,7 @@
 import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import router from './router';
+import { AuthProvider } from './context/AuthContext';
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
@@ -25,7 +26,7 @@ export const App = () => {
   }, []);
 
   return (
-    <>
+    <AuthProvider>
       <RouterProvider router={router} />
       <Toaster 
         position='top-right' 
@@ -33,7 +34,7 @@ export const App = () => {
           style: { background: '#111118', color: '#f1f5f9', border: '1px solid #1e1e2e' } 
         }} 
       />
-    </>
+    </AuthProvider>
   );
 };
 

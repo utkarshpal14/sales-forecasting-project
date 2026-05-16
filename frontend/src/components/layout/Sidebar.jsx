@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, Cpu, LayoutDashboard, Lightbulb, TrendingUp, X, Zap } from 'lucide-react';
+import { ChevronLeft, Cpu, LayoutDashboard, Lightbulb, LogOut, TrendingUp, X, Zap } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { ROUTES } from '../../constants/routes';
@@ -9,6 +10,7 @@ import { cn } from '../../utils/cn';
 export const Sidebar = ({ mobileOpen = false, onCloseMobile = () => {} }) => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const items = useMemo(
     () => [
@@ -73,9 +75,35 @@ export const Sidebar = ({ mobileOpen = false, onCloseMobile = () => {} }) => {
           {!collapsed && <span className='font-syne font-bold'>SalesAI</span>}
         </div>
         <nav className='flex-1 space-y-2'>{items.map(([l, p, I]) => navItem(l, p, I))}</nav>
-        <button onClick={() => setCollapsed((v) => !v)} className='mt-auto flex h-10 items-center justify-center rounded-xl bg-surface text-muted'>
-          <ChevronLeft className={cn('transition', collapsed && 'rotate-180')} />
-        </button>
+        
+        <div className="mt-auto flex flex-col pt-4">
+          <div className="mb-2 h-px w-full bg-border" />
+          
+          <div className={cn("flex items-center justify-between rounded-xl p-2 transition-colors hover:bg-surface", collapsed ? "justify-center" : "")}>
+            {!collapsed && (
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white shadow-md">
+                  {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                </div>
+                <div className="flex flex-col overflow-hidden">
+                  <span className="truncate text-sm font-medium text-textc">{user?.user_metadata?.full_name || 'User'}</span>
+                  <span className="truncate text-xs text-muted">{user?.email}</span>
+                </div>
+              </div>
+            )}
+            <button 
+              onClick={signOut} 
+              className={cn("flex items-center justify-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-500", !collapsed ? "h-8 w-8 shrink-0" : "w-full p-2")}
+              title="Sign Out"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+
+          <button onClick={() => setCollapsed((v) => !v)} className='mt-2 flex h-10 items-center justify-center rounded-xl bg-surface text-muted'>
+            <ChevronLeft className={cn('transition', collapsed && 'rotate-180')} />
+          </button>
+        </div>
       </motion.aside>
 
       <AnimatePresence>
@@ -115,6 +143,27 @@ export const Sidebar = ({ mobileOpen = false, onCloseMobile = () => {} }) => {
                   </NavLink>
                 ))}
               </nav>
+              
+              <div className="mt-auto flex flex-col pt-4">
+                <div className="mb-2 h-px w-full bg-border" />
+                <div className="flex items-center justify-between rounded-xl p-2">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white shadow-md">
+                      {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="truncate text-sm font-medium text-textc">{user?.user_metadata?.full_name || 'User'}</span>
+                      <span className="truncate text-xs text-muted">{user?.email}</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={signOut} 
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-500"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
+              </div>
             </motion.aside>
           </>
         )}
