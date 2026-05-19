@@ -22,8 +22,7 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-        console.log('Auth Initialization:', { data, error });
-        if (error) {
+        if (error && process.env.NODE_ENV === 'development') {
           console.error('Session Error:', error);
         }
         if (mounted) {

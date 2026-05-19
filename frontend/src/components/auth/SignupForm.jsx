@@ -6,6 +6,11 @@ import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2, User, CheckCircle2, XCircle
 import supabase from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { getAuthErrorMessage } from '../../utils/authErrors';
+import {
+  canAttemptAuth,
+  recordAuthAttempt,
+  recordAuthRateLimited,
+} from '../../utils/authRateLimit';
 
 export const SignupForm = () => {
   const { register, handleSubmit, watch } = useForm();
@@ -51,13 +56,22 @@ export const SignupForm = () => {
       setAuthError("You must agree to the Terms of Service.");
       return;
     }
+
+    const cooldown = canAttemptAuth('signup');
+    if (cooldown.blocked) {
+      setAuthError(`Please wait ${cooldown.waitSec} seconds before trying again.`);
+      return;
+    }
+
     setIsLoading(true);
     setAuthError('');
+    recordAuthAttempt('signup');
     try {
       const { error } = await signUp(data.email, data.password, data.fullName);
       if (error) throw error;
       setIsSuccess(true);
     } catch (error) {
+      if (error?.status === 429) recordAuthRateLimited('signup');
       setAuthError(getAuthErrorMessage(error));
     } finally {
       setIsLoading(false);

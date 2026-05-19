@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 const client = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000',
+  baseURL: API_BASE_URL,
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -15,12 +16,15 @@ client.interceptors.request.use((config) => {
 
 client.interceptors.response.use(
   (r) => r,
-  (e) =>
-    Promise.reject({
-      message: e?.response?.data?.detail || e?.message || 'Request failed',
-      status: e?.response?.status || 500,
-      data: e?.response?.data || null,
-    })
+  (e) => {
+    const status = e?.response?.status || 500;
+    let message = e?.response?.data?.detail || e?.message || 'Request failed';
+    if (status === 429) {
+      message =
+        'Too many requests to the server. Wait a minute, then try again.';
+    }
+    return Promise.reject({ message, status, data: e?.response?.data || null });
+  }
 );
 
 export default client;

@@ -23,8 +23,23 @@ export const getAuthErrorMessage = (error) => {
   if (message.includes('invalid_email') || message.includes('valid email')) {
     return 'Please enter a valid email address.';
   }
-  if (message.includes('too many requests') || message.includes('rate limit')) {
-    return 'Too many attempts. Please wait a moment before trying again.';
+  if (message.includes('email rate limit')) {
+    return (
+      'Supabase email limit reached (free plan allows only a few emails per hour). ' +
+      'Wait about an hour, or in Supabase Dashboard go to Authentication → Providers → Email ' +
+      'and turn off “Confirm email” for local testing, or add custom SMTP.'
+    );
+  }
+  if (
+    error.status === 429 ||
+    message.includes('too many requests') ||
+    message.includes('rate limit') ||
+    message.includes('429')
+  ) {
+    return (
+      'Too many signup attempts. Wait 15–60 minutes, then try again once. ' +
+      'For local dev, disable “Confirm email” in Supabase → Authentication → Providers.'
+    );
   }
   if (message.includes('network error') || message.includes('fetch') || message.includes('failed to fetch')) {
     return 'Network error. Please check your internet connection.';
