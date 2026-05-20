@@ -9,7 +9,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getAuthErrorMessage } from '../../utils/authErrors';
 
 export const LoginForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState('');
