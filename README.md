@@ -1,9 +1,44 @@
-# Sales Forecasting Project
+# Smart Sales Forecasting & Inventory Prediction Platform
 
-End-to-end machine learning application for retail **item outlet sales** forecasting. A leak-safe training pipeline produces a deployable model bundle; a **FastAPI** backend serves predictions and optimization endpoints; a **React** dashboard provides predictions, batch upload, insights, price/store optimization, and model metrics—with **Supabase** authentication.
+An AI-powered full-stack web application that predicts retail product sales using Machine Learning and provides business insights for inventory optimization.
 
-## Features
+ Live Demo: https://sales-forecasting-project-hun2.vercel.app/
 
+ Backend API: https://sales-forecast-api-6hky.onrender.com/
+
+ Tech Stack: 
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![React](https://img.shields.io/badge/React-18-61DAFB)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688)
+![CatBoost](https://img.shields.io/badge/CatBoost-ML-yellow)
+![License](https://img.shields.io/badge/License-Educational-green)
+
+ Built as a Project Based Learning (PBL-I) project at Chitkara University.
+
+##  Application Preview
+
+### Dashboard
+
+<img width="1919" height="903" alt="Screenshot 2026-05-24 100228" src="https://github.com/user-attachments/assets/c116129a-af9f-4ce7-86fc-511ba1dae9bb" />
+
+### Prediction
+<img width="1903" height="891" alt="Screenshot 2026-05-23 145755" src="https://github.com/user-attachments/assets/4c96d970-8788-4f4e-bfd3-b73c1b11deb2" />
+
+### Business Insights
+<img width="1893" height="891" alt="Screenshot 2026-05-23 145816" src="https://github.com/user-attachments/assets/d37cde5c-dea9-47bd-a293-3f88d50eefde" />
+
+##  Features
+
+-  Sales Prediction
+-  Batch CSV Prediction
+-  Optimal Price Suggestion
+-  Business Insights
+-  Demand Classification
+-  Best Product Recommendation
+-  Best Store Recommendation
+-  Secure Authentication
+-  Cloud Deployment
+  
 ### Machine learning
 - Preprocessing, feature engineering, and **KFold target encoding** (no test-set leakage)
 - **Outlet performance** scores computed from training data only
@@ -158,6 +193,6 @@ More frontend-specific notes: [frontend/README.md](frontend/README.md).
 
 Retail outlet sales data under `dataset/` (Big Mart–style features: item attributes, outlet type, location, MRP, visibility, etc.). Training uses `train.csv`; `test.csv` and `sample_submission.csv` are available for evaluation workflows.
 
-## License
+## 📄 License
 
-This project is for educational and portfolio use. Add a license file if you plan to open-source it formally.
+This project was developed for academic and portfolio purposes. Feel free to explore the code for learning and educational use.
